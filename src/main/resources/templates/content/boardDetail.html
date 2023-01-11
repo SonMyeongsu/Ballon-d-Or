@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout ="http://www.ultrap.net.nz/thymeleaf/layout"	
+	layout:decorate="~{layout/base_layout}"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div layout:fragment ="content" th:object="${boardDetail}">
+		<div class="row justify-content-center">
+			<div class="col-6">
+				<div class="mb-3">
+					<label for="formGroupExampleInput" class="form-label">글번호</label> 
+					<input type="text" class="form-control" id="formGroupExampleInput" th:field="*{boardNum}" readonly>
+
+						<label for="formGroupExampleInput" class="form-label">작성일</label>
+						<input type="text" class="form-control" id="formGroupExampleInput"
+							th:field="*{createDate}" readonly> 
+						<label for="formGroupExampleInput" class="form-label">작성자</label> 
+						<input type="text" class="form-control" id="formGroupExampleInput"
+							readonly th:field="*{memberId}"> 
+						<label for="formGroupExampleInput" class="form-label">제목</label>
+						<input type="text" class="form-control" id="formGroupExampleInput" th:field="*{boardTitle}" readonly>
+		
+					</div>
+
+					<label for="formGroupExampleInput" class="form-label">내용</label>
+					<div class="form-floating">
+						<textarea class="form-control" placeholder="내용을 입력하세요"
+						id="floatingTextarea2" style="height: 300px" th:field="*{boardContent}" readonly></textarea>
+				
+					</div>
+
+					<div class="row">
+					<div class="col text-center" style="margin-top: 30px;">
+						<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/list}'|"> 뒤로가기 </button>
+						
+						<!-- 권한이 ROLE_Y 맞는지 -->
+						<!-- <th:block sec:authorize="hasRole('ROLE_Y')">
+							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/updatePage(boardNum=${boardDetail.boardNum})}'|">수정하기</button>
+							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/deleteBoard(boardNum=${boardDetail.boardNum})}'|">삭제하기</button>
+						</th:block>  -->
+						
+						<!-- 수정, 삭제 작성자와 관리자만 보이도록 -->
+						<th:block th:if="${boardDetail.memberId == #authentication.name or #strings.contains(#authentication.authorities,'ROLE_Y')}" > 
+							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/updatePage(boardNum=${boardDetail.boardNum})}'|">수정하기</button>
+							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/deleteBoard(boardNum=${boardDetail.boardNum})}'|">삭제하기</button>
+						</th:block>
+					<!-- 문자열 내 포함여부 체크 (권한 정보, ROLE_N 포함되어 있는지) -->
+					<!-- <th:block th:text="${#strings.contains(#authentication.authorities ,'ROLE_N')}"> -->	<!-- true/false -->
+					<!-- </th:block>	 -->
+					<!-- <th:block th:text="${#authentication.authorities}"></th:block> -->	<!-- 권한 가져오기 -->
+					
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+
+
+</body>
+</html>

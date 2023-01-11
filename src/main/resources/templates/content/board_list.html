@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout ="http://www.ultrap.net.nz/thymeleaf/layout"	
+	layout:decorate="~{layout/base_layout}"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- xmlns:layout layout 사용할거야
+decorate -> layout 페이즈는 base_layout이랑 같이 나올거야
+controller에서 board_List 실행하면 위의 태그들로 인해서 연결된 파일들 같이 열린다. -->
+
+<!-- 계속 바뀌는 화면 -->
+
+<div layout:fragment ="content">
+
+	<table class="table table-striped table-hover">
+
+		<thead>
+			<tr>
+				<th scope="col">글 번호</th>
+				<th scope="col">제목</th>
+				<th scope="col">작성자</th>
+				<th scope="col">작성일</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th:block th:if="${#lists.size(boardList) == 0}">
+					<th colspan="4">게시글이 없습니다.</th>
+				</th:block>
+				<th:block></th:block>
+			</tr>
+		</tbody>
+
+		<tbody>
+			<th:block th:unless="${#lists.size(boardList) == 0}"
+				th:each="board : ${boardList}">
+				<tr>
+					<th scope="row" th:text="${board.boardNum}"></th>
+					<td><a
+						th:href="@{/board/boardDetail(boardNum=${board.boardNum})}"
+						th:text="${board.boardTitle}"></a></td>
+					<td th:text="${board.memberId}"></td>
+					<td th:text="${board.createDate}"></td>
+				</tr>
+			</th:block>
+		</tbody>
+	</table>
+
+	 <!-- 로그인 한 유저만 보이도록  -->
+	<div class="row" text-center>
+		<span sec:authorize="isAuthenticated()">
+			<button type="button" class="btn btn-outline-info" th:onclick="|location.href='@{/board/writeBoard}'|">글쓰기</button>	
+		</span>
+	
+	</div>  
+</div>
+
+</html>

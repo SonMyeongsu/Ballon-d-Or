@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="boardMapper">
+
+<resultMap type="kh.study.board.board.vo.BoardVO" id="board">
+<id column="BOARD_NUM" property="boardNum"/>
+<result column="BOARD_TITLE" property="boardTitle"/>
+<result column="BOARD_CONTENT" property="boardContent"/>
+<result column="MEMBER_ID" property="memberId"/>
+<result column="CREATE_DATE" property="createDate"/>
+
+</resultMap>
+
+<!--게시글 목록 -->
+
+<select id="boardList" resultMap="board">
+SELECT BOARD_NUM
+	, BOARD_TITLE
+	, MEMBER_ID
+	, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
+FROM BOARD
+ORDER BY BOARD_NUM DESC
+
+
+</select>
+
+
+<!-- 게시글 등록 -->
+<insert id="regBoard">
+INSERT INTO BOARD (
+			BOARD_NUM
+			, BOARD_TITLE
+			, BOARD_CONTENT
+			, MEMBER_ID
+			
+	) VALUES( 
+			(SELECT NVL(MAX(BOARD_NUM),0)+1 FROM BOARD)
+			, #{boardTitle}
+			, #{boardContent}
+			, #{memberId}
+			
+)
+</insert>
+
+
+<!-- 상세페이지 -->
+
+<select id="boardDetail" resultMap="board">
+
+SELECT BOARD_NUM 
+	 , BOARD_TITLE
+	 , MEMBER_ID	
+	 , BOARD_CONTENT
+	 , CREATE_DATE
+FROM BOARD
+WHERE BOARD_NUM = #{boardNum}
+
+</select>
+
+
+<!-- 수정하기 -->
+<update id="updateBoard">
+UPDATE BOARD 
+SET	BOARD_TITLE = #{boardTitle}
+	, BOARD_CONTENT = #{boardContent}
+WHERE BOARD_NUM = #{boardNum}
+			 
+
+</update>
+
+
+<!-- 삭제하기 -->
+<delete id="deleteBoard">
+DELETE BOARD
+WHERE BOARD_NUM = #{boardNum}
+
+</delete>
+
+</mapper>
