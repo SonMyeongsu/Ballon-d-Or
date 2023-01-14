@@ -1,4 +1,4 @@
-package kh.study.board.board.controller;
+package kh.study.soccer.board.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import kh.study.board.board.service.BoardService;
-import kh.study.board.board.vo.BoardVO;
-import kh.study.board.member.vo.MemberVO;
+import kh.study.soccer.board.service.BoardService;
+import kh.study.soccer.board.vo.BoardVO;
+import kh.study.soccer.member.vo.MemberVO;
 
 @Controller
 @RequestMapping("/board")
@@ -68,6 +68,8 @@ public class BoardController {
 	
 	}
 
+	
+	
 	//글 상세페이지 
 	@GetMapping("/boardDetail")
 	public String boardDetail(int boardNum, Model model) {

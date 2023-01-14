@@ -4,13 +4,14 @@
 <!-- 해당 파일에 모든 쿼리문을 작성 -->
 <mapper namespace="boardMapper">
 
-<resultMap type="kh.study.board.board.vo.BoardVO" id="board">
-<id column="BOARD_NUM" property="boardNum"/>
-<result column="BOARD_TITLE" property="boardTitle"/>
-<result column="BOARD_CONTENT" property="boardContent"/>
-<result column="MEMBER_ID" property="memberId"/>
-<result column="CREATE_DATE" property="createDate"/>
-
+<resultMap type="kh.study.soccer.board.vo.BoardVO" id="board">
+	<id column="BOARD_NUM" property="boardNum"/>
+	<result column="MEMBER_ID" property="memberId"/>
+	<result column="BOARD_TITLE" property="boardTitle"/>
+	<result column="BOARD_CONTENT" property="boardContent"/>
+	<result column="IS_Secret" property="isSecret"/>
+	<result column="BOARD_READ_CNT" property="boardReadCnt"/>
+	<result column="BOARD_REG_DATE" property="boardRegDate"/>
 </resultMap>
 
 <!--게시글 목록 -->
@@ -20,7 +21,7 @@ SELECT BOARD_NUM
 	, BOARD_TITLE
 	, MEMBER_ID
 	, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
-FROM BOARD
+FROM SOCCER_BOARD
 ORDER BY BOARD_NUM DESC
 
 

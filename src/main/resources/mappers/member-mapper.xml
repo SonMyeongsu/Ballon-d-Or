@@ -4,29 +4,31 @@
 <!-- 해당 파일에 모든 쿼리문을 작성 -->
 <mapper namespace="memberMapper">
 
-<resultMap type="kh.study.board.member.vo.MemberVO" id="member">
-<id column="MEMBER_ID" 			property="memberId"/>
-<result column="MEMBER_PW"	 	property="memberPw"/>
-<result column="MEMBER_NAME" 	property="memberName"/>
-<result column="MEMBER_TELL" 	property="memberTell"/>
-<result column="IS_ADMIN" 		property="isAdmin"/>
-<result column="MEMBER_STATUS" 	property="memberStatus"/>
-
+<resultMap type="kh.study.soccer.member.vo.MemberVO" id="member">
+	<id column="MEMBER_ID" 			property="memberId"/>
+	<result column="MEMBER_PW"	 	property="memberPw"/>
+	<result column="MEMBER_NAME" 	property="memberName"/>
+	<result column="MEMBER_TELL" 	property="memberTell"/>
+	<result column="IS_ADMIN" 		property="isAdmin"/>
+	<result column="MEMBER_EMAIL" 	property="memberEmail"/>
+	<result column="MEMBER_CREATE_DATE" 	property="memberCreateDate"/>
 </resultMap>
 
 
 <!--회원가입 -->
 <insert id="join">
-	INSERT INTO BOARD_MEMBER (
+	INSERT INTO SOCCER_MEMBER (
 			MEMBER_ID
 			, MEMBER_PW
 			, MEMBER_NAME
 			, MEMBER_TELL
+			, MEMBER_EMAIL
 	)VALUES(
 			#{memberId}
 			, #{memberPw}
 			, #{memberName}
 			, #{memberTell}	  <!-- memberVO.getMemberTell(); -->
+			, #{memberEmail}
 	)
 
 </insert>
@@ -37,7 +39,7 @@
 	SELECT MEMBER_ID
 		, MEMBER_PW
 		, IS_ADMIN	<!-- N / Y  -->
-	FROM BOARD_MEMBER
+	FROM SOCCER_MEMBER
 	WHERE MEMBER_ID = #{memberId}	<!-- 빈값 하나니까 이름 상관없음  -->
 	AND MEMBER_STATUS = 'ACTIVE'
 </select>

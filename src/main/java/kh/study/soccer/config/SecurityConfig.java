@@ -1,4 +1,4 @@
-package kh.study.board.config;
+package kh.study.soccer.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

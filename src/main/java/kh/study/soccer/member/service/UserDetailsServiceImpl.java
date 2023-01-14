@@ -1,4 +1,4 @@
-package kh.study.board.member.service;
+package kh.study.soccer.member.service;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import kh.study.board.member.vo.MemberVO;
+import kh.study.soccer.member.vo.MemberVO;
 
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {

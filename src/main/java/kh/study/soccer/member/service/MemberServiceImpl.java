@@ -1,11 +1,11 @@
-package kh.study.board.member.service;
+package kh.study.soccer.member.service;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import kh.study.board.member.vo.MemberVO;
+import kh.study.soccer.member.vo.MemberVO;
 
 @Service("memberService")
 public class MemberServiceImpl implements MemberService {
@@ -18,12 +18,12 @@ public class MemberServiceImpl implements MemberService {
 
 	//회원가입
 	@Override
-	public void join(MemberVO member) {
+	public void join(MemberVO memberVO) {
 		
-		String pw = passwordEncoder.encode(member.getMemberPw());
-		member.setMemberPw(pw);
+		String pw = passwordEncoder.encode(memberVO.getMemberPw());
+		memberVO.setMemberPw(pw);
 		
-		sqlSession.insert("memberMapper.join", member);
+		sqlSession.insert("memberMapper.join", memberVO);
 		
 	}
 	

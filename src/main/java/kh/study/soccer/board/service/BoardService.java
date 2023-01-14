@@ -1,8 +1,8 @@
-package kh.study.board.board.service;
+package kh.study.soccer.board.service;
 
 import java.util.List;
 
-import kh.study.board.board.vo.BoardVO;
+import kh.study.soccer.board.vo.BoardVO;
 
 
 public interface BoardService {

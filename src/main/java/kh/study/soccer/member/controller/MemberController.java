@@ -1,4 +1,4 @@
-package kh.study.board.member.controller;
+package kh.study.soccer.member.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kh.study.board.member.service.MemberService;
-import kh.study.board.member.vo.MemberVO;
+import kh.study.soccer.member.service.MemberService;
+import kh.study.soccer.member.vo.MemberVO;
 
 @Controller
 @RequestMapping("/member")
@@ -29,7 +29,7 @@ public class MemberController {
 	 @GetMapping("/join") 
 	 public String join(MemberVO memberVO) {
 	 
-		 return "content/join"; 
+		 return "pages/member/join"; 
 	 }
 	 
 	// 회원가입
@@ -39,15 +39,15 @@ public class MemberController {
 	// BindingResult : 검증 대상 객체(memberVO)와 검증 결과에 대한 정보를 담고 있는 객체
 	// (예시 memberVO)검증 객체 바로 다음에 선언되어야 한다.
 	// Model bindingResult를 html로 자동으로 보내준다 그래서 object가 memberVO 받는다 (없어도 됌)
-	@PostMapping("/join")
+	@PostMapping("/joinProcess")
 	public String joinProcess(@Valid MemberVO memberVO
 								, BindingResult bindingResult
 	/* , Model model */) {
 			
 		// validation체크 (데이터 유효성 검증 잘못입력 시 다시 페이지로 이동하도록)
 		if (bindingResult.hasErrors()) { // 오류가 생겼니?
-			System.out.println("에러가 발생했어여!");
-			 return "content/join"; 
+			System.out.println("에러가 발생했습니다.");
+			 return "pages/member/join"; 
 		}
 		// 회원가입 쿼리 실행
 		else {

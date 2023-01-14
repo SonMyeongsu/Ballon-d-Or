@@ -1,4 +1,4 @@
-package kh.study.board.board.service;
+package kh.study.soccer.board.service;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kh.study.board.board.vo.BoardVO;
-import kh.study.board.member.vo.MemberVO;
+import kh.study.soccer.board.vo.BoardVO;
+import kh.study.soccer.member.vo.MemberVO;
 
 @Service("boardService")
 public class BoardServiceImpl implements BoardService{
