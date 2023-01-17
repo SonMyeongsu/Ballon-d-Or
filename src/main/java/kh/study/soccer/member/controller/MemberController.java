@@ -54,8 +54,8 @@ public class MemberController {
 			memberService.join(memberVO);
 			// 게시글 목록 페이지로 이동
 			return "redirect:/board/list";
-			
 		}
+			
 	}
 	
 	//로그인 페이지 이동
