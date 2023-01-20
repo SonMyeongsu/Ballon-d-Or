@@ -1,66 +1,164 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout ="http://www.ultrap.net.nz/thymeleaf/layout"	
-	layout:decorate="~{layout/base_layout}"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layout/base_layout}">
 
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-<div layout:fragment ="content" th:object="${boardDetail}">
-		<div class="row justify-content-center">
-			<div class="col-6">
-				<div class="mb-3">
-					<label for="formGroupExampleInput" class="form-label">글번호</label> 
-					<input type="text" class="form-control" id="formGroupExampleInput" th:field="*{boardNum}" readonly>
-
-						<label for="formGroupExampleInput" class="form-label">작성일</label>
-						<input type="text" class="form-control" id="formGroupExampleInput"
-							th:field="*{createDate}" readonly> 
-						<label for="formGroupExampleInput" class="form-label">작성자</label> 
-						<input type="text" class="form-control" id="formGroupExampleInput"
-							readonly th:field="*{memberId}"> 
-						<label for="formGroupExampleInput" class="form-label">제목</label>
-						<input type="text" class="form-control" id="formGroupExampleInput" th:field="*{boardTitle}" readonly>
-		
-					</div>
-
-					<label for="formGroupExampleInput" class="form-label">내용</label>
-					<div class="form-floating">
-						<textarea class="form-control" placeholder="내용을 입력하세요"
-						id="floatingTextarea2" style="height: 300px" th:field="*{boardContent}" readonly></textarea>
-				
-					</div>
-
-					<div class="row">
-					<div class="col text-center" style="margin-top: 30px;">
-						<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/list}'|"> 뒤로가기 </button>
-						
-						<!-- 권한이 ROLE_Y 맞는지 -->
-						<!-- <th:block sec:authorize="hasRole('ROLE_Y')">
-							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/updatePage(boardNum=${boardDetail.boardNum})}'|">수정하기</button>
-							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/deleteBoard(boardNum=${boardDetail.boardNum})}'|">삭제하기</button>
-						</th:block>  -->
-						
-						<!-- 수정, 삭제 작성자와 관리자만 보이도록 -->
-						<th:block th:if="${boardDetail.memberId == #authentication.name or #strings.contains(#authentication.authorities,'ROLE_Y')}" > 
-							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/updatePage(boardNum=${boardDetail.boardNum})}'|">수정하기</button>
-							<button type="button" class="btn btn-outline-info" th:onclick="|location.href = '@{/board/deleteBoard(boardNum=${boardDetail.boardNum})}'|">삭제하기</button>
-						</th:block>
-					<!-- 문자열 내 포함여부 체크 (권한 정보, ROLE_N 포함되어 있는지) -->
-					<!-- <th:block th:text="${#strings.contains(#authentication.authorities ,'ROLE_N')}"> -->	<!-- true/false -->
-					<!-- </th:block>	 -->
-					<!-- <th:block th:text="${#authentication.authorities}"></th:block> -->	<!-- 권한 가져오기 -->
+<div layout:fragment="content">
+	<!-- 모든 내용이 들어오는 영역 -->
+	<div class="row justify-content-center">
+		<div class="col-10" style="border:3px solid #ebecef; border-radius:3%;">
+			<!-- 게시글 상세 정보 영역 -->
+			<div class="row">
+				<div class="col-10 mb-1" style=" border-bottom: solid #ebecef; color:#333; font-size: 50px;">
+					<span th:text="${detail.boardNum}"></span>
+				</div>
+				<div class="col-10 mb-1" style=" border-bottom: solid #ebecef; color:#333; font-size: 50px;">
+					<span th:text="${detail.boardTitle}"></span>
+				</div>
+				<div class="col-10 mb-1" style="color: #323232; " >
+					<span th:text="${detail.memberId}" style="font-weight: normal;"></span>
+					<!-- <span th:text="${detail.empPosition}" style="font-weight: lighter;"></span> -->
+				</div>
+				<div class="col-12 mb-3 mt-1" style="border-bottom: solid #ebecef;">
+					<span th:text="${detail.boardRegDate}"></span>
+					&nbsp;&nbsp;조회
+					<span th:text="${detail.boardReadCnt}"></span>
+				</div>
+				<div style="color: black; font-weight: lighter;">
+					<span th:text="${detail.boardContent}" style="height: 60px; width: 100px;"></span>
+				</div>
+				<input id="boardNum" type="hidden" th:value=${detail.boardNum}>
+			</div>
+			<!-- 좋아요 기능 -->			
+			<script type="text/javascript">
+				function clickLikeButton(){
 					
+					let boardNum= document.querySelector('#boardNum').value
+					
+					//ajax start
+					$.ajax({
+					   url: '/board/likeOrHateProcess', //요청경로
+					    type: 'post',
+					    data:{'boardNum' : boardNum}, //필요한 데이터
+					    success: function(result) {
+							let like = document.querySelector('#like');
+					    	
+					    	like.innerHTML = '';
+
+							let str= "";			
+							
+					    	
+					        if(result){
+					        	str ='<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">'
+							  	str+='    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>'
+								str+='</svg> '
+					        }else{
+					        	str ='<svg id="svgTag" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">'
+							  	str+='<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>'
+								str+='</svg>'
+					        }
+					        
+					        like.insertAdjacentHTML('afterbegin', str);
+					    },
+					    error: function(){
+					        alert('실패');
+					    }
+					});
+					//ajax end
+				}
+			</script>
+			
+			<div class="row" >
+				<!-- 게시글 버튼 영역 -->
+				<div class="row text-end mb-3 mt-3" style="display: inline-block;">
+					<div class="col-12">
+						<!-- 게시글 좋아요 버튼 -->
+						<button class="btn btn-outline-danger" type="button"  th:onclick="clickLikeButton()">
+								<th:block th:if="${like eq true} ">
+									<div id="like">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+								  			<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+										</svg>
+									</div>
+								</th:block>
+								<th:block th:unless="${like eq true} ">
+									<div id="like">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+									  		<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+										</svg>
+									</div>
+								</th:block>
+						</button>
+						<!-- 게시글 뒤로가기,수정버튼 -->
+						<button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/board/boardList}'|">
+							뒤로가기
+						</button>
+						<th:block th:if="${detail.memberId eq #authentication.name}">
+							<button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/board/updateBoardForm(boardNum=${detail.boardNum})}'|">
+								글수정
+							</button>
+						</th:block>
+						<th:block th:if="${detail.memberId eq #authentication.name or #strings.contains(#authentication.authorities,'ROLE_Y')}">
+							<button class="btn btn-secondary" type="button" th:onclick="|location.href = '@{/board/deleteBoard(boardNum=${detail.boardNum})}'|">
+								삭제하기
+							</button>
+						</th:block>
 					</div>
 				</div>
+				<!-- 댓글등록영역 -->
+				<!-- <div class="col">
+					<form th:action="@{/board/regReply}" method="post" th:object="${replyVO}">
+						<input type="hidden" name="boardNum" th:value="${detail.boardNum}">
+						<div class="row">
+							<label class="mb-3" for="replycontentInput" style="color: #333; font-weight: bold;">댓글</label>
+							<div class="col-10" style="border:3px solid #ebecef;  border-radius:3%;">
+								<textarea class="form-control" th:field="*{replyContent}" id="replycontentInput" rows="3" style=" border:none; resize: none;" placeholder="댓글을 남겨보세요">
+								</textarea>
+								<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+									<button type="submit" class="btn btn-outline-light" style=" color: #b7b7b7; ">댓글등록</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div> -->
 			</div>
+			<!-- 댓글 목록 영역 -->
+			<!-- <div class="row mb-3 mt-3" style="width: 80%;">
+				<div class="col">
+					<div class="replyDiv" th:each="reply :${reply}">
+						<form th:action="@{/board/updateReply}" method="post">
+							<input type="hidden" name="boardNum" th:value="${detail.boardNum}">
+							<input type="hidden" name="replyNum" th:value="${reply.replyNum}">
+							<div class="col-12">
+								<span th:text="${reply.empName}" style="font-weight: bold;"></span>
+								<span th:text="${reply.empPosition}" style="font-weight: bold;"></span>
+							</div>
+							<div class="col-12">
+								<span th:text="${reply.replyContent}" class="replyContent_span"></span>
+							</div>
+							<div class="col-12 mb-3">
+								<span th:text="${reply.replyRegDate}" style="color:#a7a7a7;"></span>
+								<th:block th:if="${reply.userId == #authentication.name or #strings.contains(#authentication.authorities,'ROLE_ADMIN')}">
+									<button class="btn btn-outline-light" style="color: #b7b7b7;" type="button" th:onclick="|location.href='@{/board/deleteReply(boardNum=${detail.boardNum}, replyNum=${reply.replyNum})}'|">
+										댓글삭제
+									</button>
+								</th:block>
+								<th:block th:if="${reply.userId == #authentication.name}">
+									<button class="btn btn-outline-light" style="color: #b7b7b7;" type="button" th:onclick="updateReply(this);">
+										댓글수정
+									</button>
+								</th:block>
+							</div>
+							<hr style="border: 0.1px solid #bbbbbb;">
+						</form>
+					</div>
+				</div>
+			</div -->>
 		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/board/like.js}"></script>
+
 </div>
-
-
-</body>
 </html>

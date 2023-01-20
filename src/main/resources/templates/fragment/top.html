@@ -11,18 +11,15 @@
 		<!-- 인증된 사용자가 아닐 때 -->
 		<span sec:authorize="isAnonymous()">
 			
-			<a th:href="@{/member/login}"> Login</a>
-			<a th:href="@{/member/join}">Join</a>
+			<a th:href="@{/member/loginPage}"> Login</a>
+			<a th:href="@{/member/joinPage}">Join</a>
 		</span>
 		<!-- 인증된 사용자이면 -->
 		<span sec:authorize="isAuthenticated()">
-		
-			<span th:text="${#authentication.name}"></span>
-			<span sec:authentication="name"></span>님 환영합니다.	<!--sec:authentication="principal.authorities" 권한정보  -->
-			<span sec:authentication="principal.authorities" ></span>
-			
+			<span sec:authentication="name"></span>님 환영합니다.	
+			<!-- <span sec:authentication="principal.authorities" ></span> -->
+			&nbsp;
 			<a th:href="@{/logout}">LOGOUT</a>
-	
 		</span>
 		
 		</div>
@@ -30,7 +27,7 @@
 	
 	<div class="row">
 		<div class="col text-center">
-			<span class="main" th:onclick="|location.href = '@{/board/list}'|">B O A R D</span>
+			<span class="main" th:onclick="|location.href = '@{/board/boardList}'|">Ballon d'Or</span>
 			
 		</div>
 	</div>

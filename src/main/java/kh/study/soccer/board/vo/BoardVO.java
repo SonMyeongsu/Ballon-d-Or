@@ -18,5 +18,8 @@ public class BoardVO {
 	private String boardReadCnt;
 	private String boardRegDate;
 	
+	private int likeCount;
+	
+	
 }
 

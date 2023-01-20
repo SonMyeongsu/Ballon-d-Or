@@ -41,7 +41,7 @@
 		<div class="row justify-content-center">
 			<!-- 행 안의 모든 내용 화면 중앙으로 오도록 -->
 			<div class="col-6">
-				<form class="row g-3" th:action="@{/member/join}" method="post" th:object="${memberVO}">
+				<form class="row g-3" th:action="@{/member/joinProcess}" method="post" th:object="${memberVO}">
 					<div class="col-12">
 						<label for="memberId" class="form-label">ID</label> 
 						<input type="text" class="form-control" th:field="*{memberId}"> <!-- * object 의미  -->
@@ -75,6 +75,12 @@
 						<input type="text" class="form-control" name="memberTells">
 					</div>
 					<div class="hasError" th:if="${#fields.hasErrors('memberTell')}" th:errors="*{memberTell}"></div>
+					
+					<div class="col-12">
+						<label for="memberEmail" class="form-label">EMAIL</label> 
+						<input type="text" class="form-control" th:field ="*{memberEmail}">
+						<div class="hasError" th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}"></div>
+					</div>
 					
 					<div class="col-12 d-grid gap-2">
 						<button type="submit" class="btn btn-primary">JOIN</button>

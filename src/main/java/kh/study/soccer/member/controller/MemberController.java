@@ -26,8 +26,8 @@ public class MemberController {
 	
 
 	// 회원가입 페이지 이동
-	 @GetMapping("/join") 
-	 public String join(MemberVO memberVO) {
+	 @GetMapping("/joinPage") 
+	 public String joinPage(MemberVO memberVO) {
 	 
 		 return "pages/member/join"; 
 	 }
@@ -41,8 +41,7 @@ public class MemberController {
 	// Model bindingResult를 html로 자동으로 보내준다 그래서 object가 memberVO 받는다 (없어도 됌)
 	@PostMapping("/joinProcess")
 	public String joinProcess(@Valid MemberVO memberVO
-								, BindingResult bindingResult
-	/* , Model model */) {
+								, BindingResult bindingResult) {
 			
 		// validation체크 (데이터 유효성 검증 잘못입력 시 다시 페이지로 이동하도록)
 		if (bindingResult.hasErrors()) { // 오류가 생겼니?
@@ -53,16 +52,16 @@ public class MemberController {
 		else {
 			memberService.join(memberVO);
 			// 게시글 목록 페이지로 이동
-			return "redirect:/board/list";
+			return "redirect:/member/loginPage";
 		}
 			
 	}
 	
 	//로그인 페이지 이동
-	@GetMapping("/login")
+	@GetMapping("/loginPage")
 	public String login(MemberVO memberVO) {
 	
-		return "content/login";
+		return "pages/member/login";
 	}
 	
 	/*	userDetailsService 때문에 필요없게 된다.

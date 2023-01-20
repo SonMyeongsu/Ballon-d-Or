@@ -9,74 +9,114 @@
 	<result column="MEMBER_ID" property="memberId"/>
 	<result column="BOARD_TITLE" property="boardTitle"/>
 	<result column="BOARD_CONTENT" property="boardContent"/>
-	<result column="IS_Secret" property="isSecret"/>
+	<result column="IS_SECRET" property="isSecret"/>
 	<result column="BOARD_READ_CNT" property="boardReadCnt"/>
 	<result column="BOARD_REG_DATE" property="boardRegDate"/>
+	
+	<result column="LIKE_COUNT" property="likeCount"/>
+</resultMap>
+
+<resultMap type="kh.study.soccer.board.vo.BoardLikeVO" id="boardLike">
+	<id column="BOARD_LIKE_NUM" 					property="boardLikeNum"/>
+	<result column="BOARD_NUM" 				property="boardNum"/>
+	<result column="MEMBER_ID" 				property="memberId"/>
 </resultMap>
 
 <!--게시글 목록 -->
-
-<select id="boardList" resultMap="board">
-SELECT BOARD_NUM
-	, BOARD_TITLE
-	, MEMBER_ID
-	, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
-FROM SOCCER_BOARD
-ORDER BY BOARD_NUM DESC
-
-
+<select id="selectBoardList" resultMap="board">
+	SELECT  BOARD_NUM
+		, BOARD_TITLE
+		, MEMBER_ID
+		, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+		, BOARD_READ_CNT
+		, IS_SECRET
+		, (SELECT COUNT(BOARD_LIKE_NUM)
+		   FROM SOCCER_BOARD_LIKE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS LIKE_COUNT
+	FROM SOCCER_BOARD 
+	ORDER BY BOARD_NUM DESC
 </select>
-
 
 <!-- 게시글 등록 -->
 <insert id="regBoard">
-INSERT INTO BOARD (
-			BOARD_NUM
-			, BOARD_TITLE
-			, BOARD_CONTENT
-			, MEMBER_ID
-			
-	) VALUES( 
-			(SELECT NVL(MAX(BOARD_NUM),0)+1 FROM BOARD)
-			, #{boardTitle}
-			, #{boardContent}
-			, #{memberId}
-			
-)
+	INSERT INTO SOCCER_BOARD (
+				BOARD_NUM
+				, BOARD_TITLE
+				, BOARD_CONTENT
+				, MEMBER_ID
+				, IS_SECRET
+				
+		) VALUES( 
+				(SELECT NVL(MAX(BOARD_NUM),0)+1 FROM SOCCER_BOARD)
+				, #{boardTitle}
+				, #{boardContent}
+				, #{memberId}
+				, #{isSecret}
+	)
 </insert>
 
 
 <!-- 상세페이지 -->
-
-<select id="boardDetail" resultMap="board">
-
-SELECT BOARD_NUM 
-	 , BOARD_TITLE
-	 , MEMBER_ID	
-	 , BOARD_CONTENT
-	 , CREATE_DATE
-FROM BOARD
-WHERE BOARD_NUM = #{boardNum}
-
+<select id="selectBoardDetail" resultMap="board">
+	SELECT BOARD_NUM 
+		 , BOARD_TITLE
+		 , MEMBER_ID	
+		 , BOARD_CONTENT
+		 , BOARD_REG_DATE
+		 , BOARD_READ_CNT
+	FROM SOCCER_BOARD
+	WHERE BOARD_NUM = #{boardNum}
 </select>
 
+<!-- 조회수 증가 -->
+<update id="updateReadCnt">
+	UPDATE SOCCER_BOARD
+	SET BOARD_READ_CNT = BOARD_READ_CNT + 1
+	WHERE BOARD_NUM = #{boardNum}
+</update>
+
+<!-- 게시글 추천수 기능 확인 -->
+<select id="boardLikeCheck" resultMap="boardLike">
+	SELECT BOARD_LIKE_NUM
+ 		  , BOARD_NUM
+	FROM SOCCER_BOARD_LIKE
+ 	WHERE BOARD_NUM = #{boardNum}
+ 	AND MEMBER_ID = #{memberId}	
+</select>
+
+<!-- 게시글 좋아요, 싫어요 기능 -->
+<insert id="insertLikeOrHate">
+		MERGE INTO SOCCER_BOARD_LIKE
+		USING DUAL
+		ON (BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId})
+		WHEN MATCHED THEN
+			UPDATE 
+		    SET BOARD_LIKE_NUM = BOARD_LIKE_NUM
+		    WHERE BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId}
+				
+			DELETE 
+			WHERE BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId}
+		WHEN NOT MATCHED THEN
+			INSERT(
+				BOARD_LIKE_NUM
+				, BOARD_NUM
+				, MEMBER_ID
+			) VALUES (
+				(SELECT NVL(MAX(BOARD_LIKE_NUM), 0) + 1 FROM SOCCER_BOARD_LIKE)
+				, #{boardNum}
+				, #{memberId}
+			)
+</insert>
 
 <!-- 수정하기 -->
 <update id="updateBoard">
-UPDATE BOARD 
-SET	BOARD_TITLE = #{boardTitle}
-	, BOARD_CONTENT = #{boardContent}
-WHERE BOARD_NUM = #{boardNum}
-			 
-
+	UPDATE SOCCER_BOARD 
+	SET BOARD_CONTENT = #{boardContent}
+	WHERE BOARD_NUM = #{boardNum}
 </update>
-
 
 <!-- 삭제하기 -->
 <delete id="deleteBoard">
-DELETE BOARD
-WHERE BOARD_NUM = #{boardNum}
-
+	DELETE FROM SOCCER_BOARD WHERE BOARD_NUM = #{boardNum}
 </delete>
 
 </mapper>

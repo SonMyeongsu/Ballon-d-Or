@@ -1,6 +1,9 @@
 package kh.study.soccer.board.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -12,8 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kh.study.soccer.board.service.BoardService;
+import kh.study.soccer.board.vo.BoardLikeVO;
 import kh.study.soccer.board.vo.BoardVO;
 import kh.study.soccer.member.vo.MemberVO;
 
@@ -26,19 +31,19 @@ public class BoardController {
 	
 	
 	//게시글 목록
-	@GetMapping("/list")
+	@GetMapping("/boardList")
 	public String boardList(BoardVO boardVO, Model model) {
 		
 		model.addAttribute("boardList", boardService.boardList(boardVO));
-	
-		return "content/board_list";
+		
+		return "pages/board/board_list";
 	}
 	
 	//글쓰기
-	@GetMapping("/writeBoard")
-	public String writeBoard(BoardVO boardVO) {
+	@GetMapping("/regBoardForm")
+	public String regBoardForm(BoardVO boardVO) {
 		
-		return "content/reg_board";
+		return "pages/board/reg_board";
 	}
 	
 	//게시글 등록
@@ -50,7 +55,7 @@ public class BoardController {
 		
 		//에러발생
 		if(bindingResult.hasErrors()) {
-			return "content/reg_board";
+			return "pages/board/reg_board";
 		}
 		
 		//글 등록
@@ -63,7 +68,7 @@ public class BoardController {
 			
 			boardService.regBoard(boardVO);
 			
-			return"content/reg_alert";
+			return"pages/board/reg_alert";
 		}
 	
 	}
@@ -72,21 +77,97 @@ public class BoardController {
 	
 	//글 상세페이지 
 	@GetMapping("/boardDetail")
-	public String boardDetail(int boardNum, Model model) {
+	public String boardDetail(int boardNum, HttpServletRequest httpServletRequest, 
+			HttpServletResponse httpServletResponse, Authentication authentication, BoardLikeVO boardLikeVO, Model model) {
 		
-		model.addAttribute("boardDetail", boardService.boardDetail(boardNum));
+		//ID 확인
+		User user = (User)authentication.getPrincipal();
 		
-		return "content/boardDetail";
+		//조회수 증가(중복 방지)
+		Cookie oldCookie = null;
+		
+		Cookie[] cookies = httpServletRequest.getCookies();
+		
+		if(cookies != null) {
+			for(Cookie cookie : cookies) {
+				if(cookie.getName().equals("postView")) {
+					oldCookie = cookie;
+				}
+			}
+		}
+		
+		if(oldCookie != null) {
+			if(!oldCookie.getValue().contains("[" + Integer.toString(boardNum) + "/" + user.getUsername() + "]")) {
+				boardService.updateReadCnt(boardNum);
+				oldCookie.setValue(oldCookie.getValue() + "_[" + boardNum + "/" + user.getUsername() + "]");
+				oldCookie.setPath("/");
+				oldCookie.setMaxAge(60*60*24);
+				httpServletResponse.addCookie(oldCookie);
+				
+			}
+		} else {
+			boardService.updateReadCnt(boardNum);
+			Cookie newCookie = new Cookie("postView", "[" + boardNum + "/" + user.getUsername() + "]"); //
+			newCookie.setPath("/");
+			newCookie.setMaxAge(60*60*24);
+			httpServletResponse.addCookie(newCookie);
+		}
+		
+		//게시글 상세 조회
+		model.addAttribute("detail", boardService.boardDetail(boardNum));
+		
+		//추천기능 상태 확인
+		boardLikeVO.setMemberId(user.getUsername());
+		
+		BoardLikeVO result = boardService.boardLikeCheck(boardLikeVO);
+
+		//좋아요가 눌리지 않은 상태
+		if(result == null) {
+			model.addAttribute("like", false);
+		}
+		else{
+		//좋아요를 누른상태
+			model.addAttribute("like", true);
+		}
+		
+		
+		return "pages/board/boardDetail";
 	}
 	
+	//게시글 추천 기능(좋아요or싫어요버튼 클릭시)
+	@ResponseBody
+	@PostMapping("/likeOrHateProcess")
+	public boolean likeAndHateProcess(BoardLikeVO boardLikeVO, Authentication authentication, Model model) {
+		//id확인
+		User user = (User)authentication.getPrincipal();
+		boardLikeVO.setMemberId(user.getUsername());
+		
+		boardService.likeOrHateProcess(boardLikeVO);
+		
+		//추천기능 상태 확인
+		BoardLikeVO isLike = boardService.boardLikeCheck(boardLikeVO);
+		
+		boolean result;
+		
+		//좋아요가 눌리지 않은 상태
+		if(isLike == null) {
+			result = false;
+		}
+		else{
+		//좋아요를 누른상태
+			result = true;
+		}
+		
+		return result;
+	}
 	
 	//수정페이지
-	@GetMapping("/updatePage")
-	public String updateBoard(int boardNum, Model model) {
+	@GetMapping("/updateBoardForm")
+	public String updateBoardForm(int boardNum, Model model) {
 		
 		model.addAttribute("update", boardService.boardDetail(boardNum));
 		
-		return "content/updateBoard";
+		return "pages/board/updateBoard";
 	}
 	
 	
@@ -107,7 +188,7 @@ public class BoardController {
 		
 		boardService.deleteBoard(boardNum);
 		
-		return "redirect:/board/list";
+		return "redirect:/board/boardList";
 	}
 
 }

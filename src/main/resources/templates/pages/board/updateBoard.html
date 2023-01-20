@@ -18,10 +18,10 @@
 							th:field="*{boardNum}" readonly> 
 						<label for="formGroupExampleInput" class="form-label">제목</label> 
 						<input type="text" class="form-control" id="formGroupExampleInput"
-							th:field="*{boardTitle}"> 
+							th:field="*{boardTitle}" readonly> 
 						<label for="formGroupExampleInput" class="form-label">작성일</label> 
 						<input type="text" class="form-control" id="formGroupExampleInput"
-							th:field="*{createDate}" readonly> 
+							th:field="*{boardRegDate}" readonly> 
 						<label for="formGroupExampleInput" class="form-label">작성자</label> 
 						<input type="text" class="form-control" id="formGroupExampleInput"
 							th:field="*{memberId}" readonly>
@@ -38,16 +38,8 @@
 					<div class="row">
 						<div class="col text-center">
 							<button type="button" class="btn btn-outline-info"
-								th:onclick="|location.href = '@{/board/list}'|">뒤로가기</button>
-							
-							
+								th:onclick="|location.href = '@{/board/boardDetail(boardNum=${update.boardNum})}'|">뒤로가기</button>
 							<button type="submit" class="btn btn-outline-info">수정하기</button>
-
-							<button type="button" class="btn btn-outline-info"
-								th:onclick="|location.href = '@{/board/deleteBoard(boardNum=${update.boardNum})}'|">
-								삭제하기</button>
-						
-						
 						</div>
 					</div>
 				</form>

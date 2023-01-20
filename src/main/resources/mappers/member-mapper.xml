@@ -41,7 +41,7 @@
 		, IS_ADMIN	<!-- N / Y  -->
 	FROM SOCCER_MEMBER
 	WHERE MEMBER_ID = #{memberId}	<!-- 빈값 하나니까 이름 상관없음  -->
-	AND MEMBER_STATUS = 'ACTIVE'
+	
 </select>
 
 
