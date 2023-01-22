@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kh.study.soccer.board.service.BoardService;
+import kh.study.soccer.board.vo.BoardHateVO;
 import kh.study.soccer.board.vo.BoardLikeVO;
 import kh.study.soccer.board.vo.BoardVO;
 import kh.study.soccer.member.vo.MemberVO;
@@ -78,7 +79,8 @@ public class BoardController {
 	//글 상세페이지 
 	@GetMapping("/boardDetail")
 	public String boardDetail(int boardNum, HttpServletRequest httpServletRequest, 
-			HttpServletResponse httpServletResponse, Authentication authentication, BoardLikeVO boardLikeVO, Model model) {
+			HttpServletResponse httpServletResponse, Authentication authentication,
+			BoardLikeVO boardLikeVO, BoardHateVO boardHateVO, Model model) {
 		
 		//ID 확인
 		User user = (User)authentication.getPrincipal();
@@ -116,12 +118,14 @@ public class BoardController {
 		//게시글 상세 조회
 		model.addAttribute("detail", boardService.boardDetail(boardNum));
 		
-		//추천기능 상태 확인
+		
+		//////////////////////////////////////
+		//좋아요 상태 확인
 		boardLikeVO.setMemberId(user.getUsername());
 		
 		BoardLikeVO result = boardService.boardLikeCheck(boardLikeVO);
 
-		//좋아요가 눌리지 않은 상태
+		//좋아요 누르지 않은 상태
 		if(result == null) {
 			model.addAttribute("like", false);
 		}
@@ -129,27 +133,42 @@ public class BoardController {
 		//좋아요를 누른상태
 			model.addAttribute("like", true);
 		}
+		////////////////////////
+		//싫어요 상태 확인
+		boardHateVO.setMemberId(user.getUsername());
+		
+		BoardHateVO resultHate = boardService.boardHateCheck(boardHateVO);
+		
+		//싫어요 누르지 않은 상태
+		if(resultHate == null) {
+			model.addAttribute("hate", false);
+		}
+		else{
+			//좋아요를 누른상태
+			model.addAttribute("hate", true);
+		}
+		
 		
 		
 		return "pages/board/boardDetail";
 	}
 	
-	//게시글 추천 기능(좋아요or싫어요버튼 클릭시)
+	//게시글 좋아요 기능(좋아요버튼 클릭시)
 	@ResponseBody
-	@PostMapping("/likeOrHateProcess")
-	public boolean likeAndHateProcess(BoardLikeVO boardLikeVO, Authentication authentication, Model model) {
+	@PostMapping("/likeProcess")
+	public boolean likeProcess(BoardLikeVO boardLikeVO, Authentication authentication, Model model) {
 		//id확인
 		User user = (User)authentication.getPrincipal();
 		boardLikeVO.setMemberId(user.getUsername());
 		
-		boardService.likeOrHateProcess(boardLikeVO);
+		boardService.likeProcess(boardLikeVO);
 		
-		//추천기능 상태 확인
+		//좋아요 상태 확인
 		BoardLikeVO isLike = boardService.boardLikeCheck(boardLikeVO);
 		
 		boolean result;
 		
-		//좋아요가 눌리지 않은 상태
+		//좋아요를 누르지 않은 상태
 		if(isLike == null) {
 			result = false;
 		}
@@ -159,6 +178,33 @@ public class BoardController {
 		}
 		
 		return result;
+	}
+	
+	//게시글 싫어요 기능(싫어요버튼 클릭시)
+	@ResponseBody
+	@PostMapping("/hateProcess")
+	public boolean hateProcess(BoardHateVO boardHateVO, Authentication authentication, Model model) {
+		//id확인
+		User user = (User)authentication.getPrincipal();
+		boardHateVO.setMemberId(user.getUsername());
+		
+		boardService.hateProcess(boardHateVO);
+		
+		//싫어요 상태 확인
+		BoardHateVO isHate = boardService.boardHateCheck(boardHateVO);
+		
+		boolean resultHate;
+		
+		//싫어요를 누르지 않은 상태
+		if(isHate == null) {
+			resultHate = false;
+		}
+		else{
+			//싫어요를 누른상태
+			resultHate = true;
+		}
+		
+		return resultHate;
 	}
 	
 	//수정페이지

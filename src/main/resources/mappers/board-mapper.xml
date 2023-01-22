@@ -13,11 +13,18 @@
 	<result column="BOARD_READ_CNT" property="boardReadCnt"/>
 	<result column="BOARD_REG_DATE" property="boardRegDate"/>
 	
-	<result column="LIKE_COUNT" property="likeCount"/>
+	<result column="LIKE_COUNT" property="likeCount"/><!-- 가짜컬럼 -->
+	<result column="HATE_COUNT" property="hateCount"/><!-- 가짜컬럼 -->
 </resultMap>
 
 <resultMap type="kh.study.soccer.board.vo.BoardLikeVO" id="boardLike">
 	<id column="BOARD_LIKE_NUM" 					property="boardLikeNum"/>
+	<result column="BOARD_NUM" 				property="boardNum"/>
+	<result column="MEMBER_ID" 				property="memberId"/>
+</resultMap>
+
+<resultMap type="kh.study.soccer.board.vo.BoardHateVO" id="boardHate">
+	<id column="BOARD_HATE_NUM" 			property="boardHateNum"/>
 	<result column="BOARD_NUM" 				property="boardNum"/>
 	<result column="MEMBER_ID" 				property="memberId"/>
 </resultMap>
@@ -32,6 +39,8 @@
 		, IS_SECRET
 		, (SELECT COUNT(BOARD_LIKE_NUM)
 		   FROM SOCCER_BOARD_LIKE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS LIKE_COUNT
+		, (SELECT COUNT(BOARD_HATE_NUM)
+		   FROM SOCCER_BOARD_HATE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS HATE_COUNT
 	FROM SOCCER_BOARD 
 	ORDER BY BOARD_NUM DESC
 </select>
@@ -74,7 +83,7 @@
 	WHERE BOARD_NUM = #{boardNum}
 </update>
 
-<!-- 게시글 추천수 기능 확인 -->
+<!-- 게시글 좋아요 상태 확인 -->
 <select id="boardLikeCheck" resultMap="boardLike">
 	SELECT BOARD_LIKE_NUM
  		  , BOARD_NUM
@@ -82,9 +91,8 @@
  	WHERE BOARD_NUM = #{boardNum}
  	AND MEMBER_ID = #{memberId}	
 </select>
-
-<!-- 게시글 좋아요, 싫어요 기능 -->
-<insert id="insertLikeOrHate">
+<!-- 게시글 좋아요 기능 -->
+<insert id="insertLike">
 		MERGE INTO SOCCER_BOARD_LIKE
 		USING DUAL
 		ON (BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId})
@@ -102,6 +110,38 @@
 				, MEMBER_ID
 			) VALUES (
 				(SELECT NVL(MAX(BOARD_LIKE_NUM), 0) + 1 FROM SOCCER_BOARD_LIKE)
+				, #{boardNum}
+				, #{memberId}
+			)
+</insert>
+
+<!-- 게시글 싫어요 상태 확인 -->
+<select id="boardHateCheck" resultMap="boardHate">
+	SELECT BOARD_HATE_NUM
+ 		  , BOARD_NUM
+	FROM SOCCER_BOARD_HATE
+ 	WHERE BOARD_NUM = #{boardNum}
+ 	AND MEMBER_ID = #{memberId}	
+</select>
+<!-- 게시글 싫어요 기능 -->
+<insert id="insertHate">
+		MERGE INTO SOCCER_BOARD_HATE
+		USING DUAL
+		ON (BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId})
+		WHEN MATCHED THEN
+			UPDATE 
+		    SET BOARD_HATE_NUM = BOARD_HATE_NUM
+		    WHERE BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId}
+				
+			DELETE 
+			WHERE BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId}
+		WHEN NOT MATCHED THEN
+			INSERT(
+				BOARD_HATE_NUM
+				, BOARD_NUM
+				, MEMBER_ID
+			) VALUES (
+				(SELECT NVL(MAX(BOARD_HATE_NUM), 0) + 1 FROM SOCCER_BOARD_HATE)
 				, #{boardNum}
 				, #{memberId}
 			)

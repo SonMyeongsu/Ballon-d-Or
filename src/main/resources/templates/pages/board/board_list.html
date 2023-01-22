@@ -29,7 +29,8 @@ controller에서 board_List 실행하면 위의 태그들로 인해서 연결된
 						<td>작성자</td>
 						<td>작성일</td>
 						<td>조회수</td>
-						<td>추천수</td>
+						<td>좋아요</td>
+						<td>싫어요</td>
 					</tr>
 				</thead>
 				<tbody class="table-group-divider">
@@ -72,6 +73,7 @@ controller에서 board_List 실행하면 위의 태그들로 인해서 연결된
 						<td th:text="${#strings.substring(list.boardRegDate,0,10)}"></td>
 						<td th:text="${list.boardReadCnt}"></td>
 						<td th:text="${list.likeCount}"></td>
+						<td th:text="${list.hateCount}"></td>
 					</tr>
 				</tbody>
 			</table>

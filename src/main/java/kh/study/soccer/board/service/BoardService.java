@@ -2,6 +2,7 @@ package kh.study.soccer.board.service;
 
 import java.util.List;
 
+import kh.study.soccer.board.vo.BoardHateVO;
 import kh.study.soccer.board.vo.BoardLikeVO;
 import kh.study.soccer.board.vo.BoardVO;
 
@@ -22,10 +23,16 @@ public interface BoardService {
 
 	//추천 기능
 	//////////////////
-		//추천기능 상태 확인
+		//좋아요 상태 확인
 		BoardLikeVO boardLikeCheck(BoardLikeVO boardLikeVO);
-		// 추천기능 실행(좋아요or싫어요버튼 클릭시)
-		void likeOrHateProcess(BoardLikeVO boardLikeVO);
+		//좋아요 실행
+		void likeProcess(BoardLikeVO boardLikeVO);
+		
+		//싫어요 상태 확인
+		BoardHateVO boardHateCheck(BoardHateVO boardHateVO);
+		//싫어요 실행
+		void hateProcess(BoardHateVO boardHateVO);
+		
 		
 	//수정하기
 	void updateBoard(BoardVO boardVO);

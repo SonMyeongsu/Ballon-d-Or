@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kh.study.soccer.board.vo.BoardHateVO;
 import kh.study.soccer.board.vo.BoardLikeVO;
 import kh.study.soccer.board.vo.BoardVO;
 import kh.study.soccer.member.vo.MemberVO;
@@ -42,16 +43,32 @@ public class BoardServiceImpl implements BoardService{
 	
 	//추천 기능
 	//////////////
-		//추천기능 상태확인
+		//좋아요 상태확인
 		@Override
 		public BoardLikeVO boardLikeCheck(BoardLikeVO boardLikeVO) {
 			return sqlSession.selectOne("boardMapper.boardLikeCheck", boardLikeVO);
 		}
-		// 추천기능 실행(좋아요or싫어요버튼 클릭시)
+		//좋아요 실행
 		@Override
-		public void likeOrHateProcess(BoardLikeVO boardLikeVO) {
-			sqlSession.insert("boardMapper.insertLikeOrHate", boardLikeVO);
+		public void likeProcess(BoardLikeVO boardLikeVO) {
+			sqlSession.insert("boardMapper.insertLike", boardLikeVO);
 		}
+		
+		//싫어요 상태확인
+		@Override
+		public BoardHateVO boardHateCheck(BoardHateVO boardHateVO) {
+			return sqlSession.selectOne("boardMapper.boardHateCheck", boardHateVO);
+		}
+		//싫어요 실행
+		@Override
+		public void hateProcess(BoardHateVO boardHateVO) {
+			sqlSession.insert("boardMapper.insertHate", boardHateVO);
+		}
+		///////////////
+		
+		
+		
+		
 	
 	// 조회수 증가
 	@Override
@@ -70,6 +87,8 @@ public class BoardServiceImpl implements BoardService{
 	public void deleteBoard(int boardNum) {
 		sqlSession.delete("boardMapper.deleteBoard", boardNum);
 	}
+
+
 
 
 

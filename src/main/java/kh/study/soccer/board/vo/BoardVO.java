@@ -19,6 +19,7 @@ public class BoardVO {
 	private String boardRegDate;
 	
 	private int likeCount;
+	private int hateCount;
 	
 	
 }
