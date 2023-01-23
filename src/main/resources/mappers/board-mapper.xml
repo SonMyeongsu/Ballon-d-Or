@@ -91,15 +91,23 @@
  	WHERE BOARD_NUM = #{boardNum}
  	AND MEMBER_ID = #{memberId}	
 </select>
+<!--게시글 좋아요기능(싫어요 삭제)  -->
+<delete id="beforeInsertLike">
+	DELETE FROM SOCCER_BOARD_HATE
+	WHERE BOARD_NUM = #{boardNum}
+	AND MEMBER_ID = #{memberId}
+</delete>
 <!-- 게시글 좋아요 기능 -->
 <insert id="insertLike">
 		MERGE INTO SOCCER_BOARD_LIKE
 		USING DUAL
 		ON (BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId})
 		WHEN MATCHED THEN
+			
+			<!-- 실제로 실행 되지 않는 Dummy Code -->
+			<!-- update문은 조건절 안해도 됨 ON절을 알아서 긁어옴 -->
 			UPDATE 
 		    SET BOARD_LIKE_NUM = BOARD_LIKE_NUM
-		    WHERE BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId}
 				
 			DELETE 
 			WHERE BOARD_NUM = #{boardNum} AND MEMBER_ID = #{memberId}
@@ -123,6 +131,13 @@
  	WHERE BOARD_NUM = #{boardNum}
  	AND MEMBER_ID = #{memberId}	
 </select>
+<!--게시글 싫어요기능(좋아요 삭제)  -->
+<delete id="beforeInsertHate">
+	DELETE FROM SOCCER_BOARD_LIKE
+	WHERE BOARD_NUM = #{boardNum}
+	AND MEMBER_ID = #{memberId}
+</delete>
+
 <!-- 게시글 싫어요 기능 -->
 <insert id="insertHate">
 		MERGE INTO SOCCER_BOARD_HATE
@@ -158,5 +173,4 @@
 <delete id="deleteBoard">
 	DELETE FROM SOCCER_BOARD WHERE BOARD_NUM = #{boardNum}
 </delete>
-
 </mapper>

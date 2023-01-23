@@ -5,6 +5,7 @@ import java.util.List;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kh.study.soccer.board.vo.BoardHateVO;
 import kh.study.soccer.board.vo.BoardLikeVO;
@@ -49,8 +50,10 @@ public class BoardServiceImpl implements BoardService{
 			return sqlSession.selectOne("boardMapper.boardLikeCheck", boardLikeVO);
 		}
 		//좋아요 실행
+		@Transactional
 		@Override
 		public void likeProcess(BoardLikeVO boardLikeVO) {
+			sqlSession.delete("boardMapper.beforeInsertLike", boardLikeVO);
 			sqlSession.insert("boardMapper.insertLike", boardLikeVO);
 		}
 		
@@ -60,8 +63,10 @@ public class BoardServiceImpl implements BoardService{
 			return sqlSession.selectOne("boardMapper.boardHateCheck", boardHateVO);
 		}
 		//싫어요 실행
+		@Transactional
 		@Override
 		public void hateProcess(BoardHateVO boardHateVO) {
+			sqlSession.delete("boardMapper.beforeInsertHate", boardHateVO);
 			sqlSession.insert("boardMapper.insertHate", boardHateVO);
 		}
 		///////////////

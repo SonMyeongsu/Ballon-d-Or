@@ -183,10 +183,12 @@ public class BoardController {
 	//게시글 싫어요 기능(싫어요버튼 클릭시)
 	@ResponseBody
 	@PostMapping("/hateProcess")
-	public boolean hateProcess(BoardHateVO boardHateVO, Authentication authentication, Model model) {
+	public boolean hateProcess(
+			/* BoardLikeVO boardLikeVO, */BoardHateVO boardHateVO, Authentication authentication, Model model) {
 		//id확인
 		User user = (User)authentication.getPrincipal();
 		boardHateVO.setMemberId(user.getUsername());
+//		boardLikeVO.setMemberId(user.getUsername());
 		
 		boardService.hateProcess(boardHateVO);
 		
