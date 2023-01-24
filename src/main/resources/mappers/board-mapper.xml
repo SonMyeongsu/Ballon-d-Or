@@ -29,20 +29,63 @@
 	<result column="MEMBER_ID" 				property="memberId"/>
 </resultMap>
 
-<!--게시글 목록 -->
+<!--게시글 검색및 목록 조회-->
 <select id="selectBoardList" resultMap="board">
-	SELECT  BOARD_NUM
-		, BOARD_TITLE
-		, MEMBER_ID
-		, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
-		, BOARD_READ_CNT
-		, IS_SECRET
-		, (SELECT COUNT(BOARD_LIKE_NUM)
-		   FROM SOCCER_BOARD_LIKE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS LIKE_COUNT
-		, (SELECT COUNT(BOARD_HATE_NUM)
-		   FROM SOCCER_BOARD_HATE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS HATE_COUNT
-	FROM SOCCER_BOARD 
-	ORDER BY BOARD_NUM DESC
+	SELECT RN
+			, BOARD_NUM
+			, BOARD_TITLE
+			, MEMBER_ID
+			, BOARD_REG_DATE
+			, BOARD_READ_CNT
+			, IS_SECRET
+			, LIKE_COUNT
+			, HATE_COUNT
+	FROM
+	(
+		SELECT ROWNUM AS RN
+				, BOARD_NUM
+				, BOARD_TITLE
+				, MEMBER_ID
+				, BOARD_REG_DATE
+				, BOARD_READ_CNT
+				, IS_SECRET
+				, LIKE_COUNT
+				, HATE_COUNT
+		FROM
+		(
+			SELECT  BOARD_NUM
+				, BOARD_TITLE
+				, MEMBER_ID
+				, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+				, BOARD_READ_CNT
+				, IS_SECRET
+				, (SELECT COUNT(BOARD_LIKE_NUM)
+				   FROM SOCCER_BOARD_LIKE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS LIKE_COUNT
+				, (SELECT COUNT(BOARD_HATE_NUM)
+				   FROM SOCCER_BOARD_HATE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS HATE_COUNT
+			FROM SOCCER_BOARD 
+			WHERE 1= 1
+			<if test= "memberId != null and !memberId.equals('')">
+			AND UPPER(MEMBER_ID) LIKE UPPER('%'||#{memberId}||'%') 
+			</if>
+			<if test= "boardTitle != null and !boardTitle.equals('')">
+			AND UPPER(BOARD_TITLE) LIKE UPPER('%'||#{boardTitle}||'%')
+			</if>
+			<!-- <if test= "boardCateCode != null and !boardCateCode.equals('')">
+			AND BO.BOARD_CATE_CODE = #{boardCateCode}
+			</if> --> 
+			<if test="fromDate != null and !fromDate.equals('')">
+			AND TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') &gt;= #{fromDate}  
+			</if>		
+			<if test="toDate != null and !toDate.equals('')">
+			AND TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') &lt;= #{toDate}
+			</if>
+		ORDER BY ${orderBy} DESC
+		)
+	)
+    <if test ="startNum !=null and endNum != null">
+	WHERE RN &gt;= #{startNum} AND RN &lt;= #{endNum}
+	</if>
 </select>
 
 <!-- 게시글 등록 -->
@@ -173,4 +216,10 @@
 <delete id="deleteBoard">
 	DELETE FROM SOCCER_BOARD WHERE BOARD_NUM = #{boardNum}
 </delete>
+
+<!-- 게시글 총 개수 조회 -->
+<select id="selectBoardCnt" resultType="int">
+	SELECT COUNT(BOARD_NUM)
+	FROM SOCCER_BOARD
+</select>
 </mapper>

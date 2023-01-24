@@ -11,6 +11,93 @@ controller에서 board_List 실행하면 위의 태그들로 인해서 연결된
 <!-- 계속 바뀌는 화면 -->
 
 <div layout:fragment ="content">
+	<!-- 게시판 검색 -->
+	<div class="row mb-1">
+		<div class="col">
+			<form th:action="@{/board/boardList}" method="post">
+				<table class="table align-middle table-bordered text-center test"
+					style="color: #333; font-weight: lighter;">
+					<colgroup>
+						<col width="8%">
+						<col width="8%">
+						<col width="15%">
+						<col width="8%">
+						<col width="19%">
+						<col width="8%">
+						<col width="8%">
+						<col width="18%">
+						<col width="8%">
+					</colgroup>
+					<tr>
+						<td rowspan="2">
+							<div class="row">
+								<div class="col-12">
+									<br>
+								</div>
+								<div class="col-12">
+									검 색<br> 조 건
+								</div>
+							</div>
+						</td>
+						<td class="searchTitle">카테고리</td>
+						<td><!-- <select class="form-select" name="boardCateCode">
+								<option value="" th:selected="${paramMap['boardCateCode'] == null or paramMap['boardCateCode'] eq ''}">전체</option>
+								<option th:each="cateList: ${boardCate}"
+									th:text="${cateList.boardCateName}"
+									th:value="${cateList.boardCateCode}"
+									th:selected="${paramMap['boardCateCode'] eq cateList.boardCateCode}">
+								</option>
+							</select> -->
+						</td>
+						<td class="searchTitle">검색어</td>
+						<td colspan="2">
+							<input class="form-control" type="text" name="boardTitle" id="" th:value="${paramMap['boardTitle']}">
+							<select class="form-select"></select>								
+						</td>
+						<td class="searchTitle">작성자</td>
+						<td>
+							<input class="form-control" type="text" name="memberId" id="" th:value="${paramMap['memberId']}">
+						</td>
+						<td rowspan="2">
+							<button type="submit" id="searchButton" class="btn btn-outline-info" style="color: #333; height: 90px; width: 70px; border-color: #e3e6f0;">
+								검색
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="searchTitle">작성일</td>
+						<td colspan="4">
+							<div class="row">
+								<div class="col-6">
+									<input class="form-control" type="date" name="fromDate" id="" th:value="${paramMap['fromDate']}">
+								</div>
+								<div class="col-6">
+									<input class="form-control" type="date" name="toDate" id="" th:value="${paramMap['toDate']}">
+								</div>
+							</div>
+						</td>
+						<td class="searchTitle">정렬</td>
+						<td colspan="1">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="orderBy" th:value="BOARD_NUM" checked="checked"> 
+								<label class="form-check-label" for="">최신순</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="orderBy" th:value="BOARD_READ_CNT"> 
+								<label class="form-check-label" for="">조회순</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="orderBy" th:value="LIKE_COUNT"> 
+								<label class="form-check-label" for="">추천순</label>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<input type="hidden" id="nowPage" value="1" name="nowPage">
+			</form>
+		</div>
+	</div>
+	<!-- 게시글 -->
 	<div class="row">
 		<div class="col">
 			<table class="table table-hover" style="text-align: center;">
@@ -63,11 +150,11 @@ controller에서 board_List 실행하면 위의 태그들로 인해서 연결된
 							</th:block> 
 							<th:block th:unless="${list.replyCount ne 0}">
 							</th:block>  -->
-							<th:block th:if="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd HH') eq list.boardRegDate}">
-								<img src="/imgs/board/icons8-동그라미-n-48.png" height="20" width="20" />
+							<th:block th:if="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd') eq list.boardRegDate}"><!--#calendars.format(#calendars.createNow(),'날짜 형식') 현재시각 출력-->
+								<img src="/imgs/board/icons8-동그라미-n-48.png" height="20" width="20" /> 
 							</th:block> 
-							<th:block th:unless="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd HH') eq list.boardRegDate}">
-							</th:block>
+							<!-- <th:block th:unless="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd') eq list.boardRegDate}">
+							</th:block> -->
 						</td>
 						<td th:text="${list.memberId}"></td>
 						<td th:text="${#strings.substring(list.boardRegDate,0,10)}"></td>
@@ -79,14 +166,26 @@ controller에서 board_List 실행하면 위의 태그들로 인해서 연결된
 			</table>
 		</div>
 	</div>
-
 	 <!-- 로그인 한 유저만 보이도록  -->
-	<div class="row" text-center>
+	<div class="row">
 		<span sec:authorize="isAuthenticated()">
-			<button type="button" class="btn btn-outline-info" th:onclick="|location.href='@{/board/regBoardForm}'|">글쓰기</button>	
+			<button type="button" class="btn btn-secondary" th:onclick="|location.href='@{/board/regBoardForm}'|">글쓰기</button>	
 		</span>
-	
-	</div>  
+	</div>	
+	<!-- 페이징 처리 -->
+	<div class="row">
+		<div align="center">
+			<th:block th:if="${boardVO.prev}">
+				<a th:text="prev" th:href="@{/board/boardList(nowPage=${boardVO.beginPage - 1})}"></a>
+			</th:block>
+			<th:block th:each="pageNum : ${#numbers.sequence(boardVO.beginPage, boardVO.endPage)}">
+				<a th:text="${pageNum}" th:href="@{/board/boardList(nowPage=${pageNum})}"></a>
+			</th:block>
+			<th:block th:if="${boardVO.next}">
+				<a th:text="next" th:href="@{/board/boardList(nowPage=${boardVO.endPage + 1})}"></a>
+			</th:block>
+		</div>
+	</div>
 </div>
 
 </html>

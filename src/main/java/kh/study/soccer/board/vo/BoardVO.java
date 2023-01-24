@@ -1,6 +1,7 @@
 package kh.study.soccer.board.vo;
 
 
+import kh.study.soccer.home.vo.PageVO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BoardVO {
+public class BoardVO extends PageVO {
 
 	private int boardNum;
 	private String memberId;

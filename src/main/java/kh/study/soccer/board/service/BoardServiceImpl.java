@@ -1,6 +1,7 @@
 package kh.study.soccer.board.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,11 @@ public class BoardServiceImpl implements BoardService{
 		
 	}
 
-	//게시글 목록
+	//게시글 검색 및 목록 조회
 	@Override
-	public List<BoardVO> boardList(BoardVO boardVO) {
+	public List<BoardVO> boardList(Map<String, Object> map) {
 		
-		return sqlSession.selectList("boardMapper.selectBoardList", boardVO);
+		return sqlSession.selectList("boardMapper.selectBoardList", map);
 	}
 
 	//상세페이지
@@ -91,6 +92,12 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public void deleteBoard(int boardNum) {
 		sqlSession.delete("boardMapper.deleteBoard", boardNum);
+	}
+	
+	//게시글 총 개수 조회
+	@Override
+	public int selectBoardCnt() {
+		return sqlSession.selectOne("boardMapper.selectBoardCnt");
 	}
 
 

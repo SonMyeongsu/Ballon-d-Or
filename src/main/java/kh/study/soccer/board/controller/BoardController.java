@@ -1,5 +1,7 @@
 package kh.study.soccer.board.controller;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,27 +17,66 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kh.study.soccer.board.service.BoardService;
 import kh.study.soccer.board.vo.BoardHateVO;
 import kh.study.soccer.board.vo.BoardLikeVO;
 import kh.study.soccer.board.vo.BoardVO;
+import kh.study.soccer.config.appDateUtil;
+import kh.study.soccer.home.vo.PageVO;
 import kh.study.soccer.member.vo.MemberVO;
 
 @Controller
 @RequestMapping("/board")
 public class BoardController {
 	
+	
+	//boardService라는 이름으로 만들어진 객체를 로드해서 의존성 주입
 	@Resource(name="boardService")
 	private BoardService boardService;
 	
 	
 	//게시글 목록
-	@GetMapping("/boardList")
-	public String boardList(BoardVO boardVO, Model model) {
+	@RequestMapping("/boardList")
+	public String boardList(@RequestParam Map<String, Object> paramMap,BoardVO boardVO, Model model) {
 		
-		model.addAttribute("boardList", boardService.boardList(boardVO));
+		if(paramMap.get("orderBy") == null || paramMap.get("orderBy") =="") {
+			paramMap.put("orderBy", "BOARD_NUM");
+		}
+		
+		//map에 날짜 세팅
+		// 현재 날짜
+		String nowDate = appDateUtil.getNowDateToString("-");// 2020-10-10
+		// 한달 전날짜
+		String beforeDate = appDateUtil.getBeforeMonthDateToString();
+		// 넘어오는 fromDate가 없다면 한달 전 날짜로 세팅
+		if (paramMap.get("fromDate") == null) {
+			paramMap.put("fromDate", beforeDate);
+		}
+		if (paramMap.get("toDate") == null) {
+			paramMap.put("toDate", nowDate);
+		}
+		
+		//조건검색 결과 데이터 수
+		int totalCnt = boardService.boardList(paramMap).size();
+		//페이지 정보 세팅
+		boardVO.setTotalDataCnt(totalCnt);
+		boardVO.setPageInfo();
+		
+		// 페이징에 따라 조회될 데이터를 넣어준다.
+		paramMap.put("startNum",boardVO.getStartNum());
+		paramMap.put("endNum", boardVO.getEndNum());
+		
+		//map 보내줌
+		model.addAttribute("paramMap", paramMap);
+		
+		//게시판 검색및 조회
+		model.addAttribute("boardList", boardService.boardList(paramMap));
+		
+		//페이징처리 vo보내줌
+		model.addAttribute("boardVO", boardVO);
 		
 		return "pages/board/board_list";
 	}

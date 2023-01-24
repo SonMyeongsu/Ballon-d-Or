@@ -1,6 +1,7 @@
 package kh.study.soccer.board.service;
 
 import java.util.List;
+import java.util.Map;
 
 import kh.study.soccer.board.vo.BoardHateVO;
 import kh.study.soccer.board.vo.BoardLikeVO;
@@ -9,8 +10,8 @@ import kh.study.soccer.board.vo.BoardVO;
 
 public interface BoardService {
 
-	//게시글 목록
-	List<BoardVO> boardList(BoardVO board);
+	//게시글 검색 및 목록 조회
+	List<BoardVO> boardList(Map<String, Object> map);
 	
 	//게시글 등록
 	void regBoard(BoardVO boardVO);
@@ -39,5 +40,8 @@ public interface BoardService {
 	
 	//삭제하기
 	void deleteBoard(int boardNum);
+	
+	//게시글 총 개수 조회
+	int selectBoardCnt();
 	
 }
