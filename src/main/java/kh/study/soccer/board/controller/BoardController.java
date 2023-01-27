@@ -40,11 +40,48 @@ public class BoardController {
 	
 	//게시글 목록
 	@RequestMapping("/boardList")
-	public String boardList(@RequestParam Map<String, Object> paramMap,BoardVO boardVO, Model model) {
+	public String boardList(String searchType, String searchValue,@RequestParam Map<String, Object> paramMap,BoardVO boardVO, Model model) {
 		
 		if(paramMap.get("orderBy") == null || paramMap.get("orderBy") =="") {
 			paramMap.put("orderBy", "BOARD_NUM");
 		}
+		
+	
+		
+		if( searchType != null ) {
+			switch (searchType) {
+			case "작성자":
+				
+				paramMap.put("memberId", searchValue);
+				break;
+
+			case "글제목":
+				
+				paramMap.put("boardTitle", searchValue);
+				break;
+				
+			case "글내용":
+				
+				paramMap.put("boardContent", searchValue);
+				break;
+			
+			case "글제목글내용":
+				System.out.println("글제목+글내용"); 
+				System.out.println("글제목+글내용"); 
+				System.out.println("글제목+글내용"); 
+				System.out.println("글제목+글내용"); 
+				System.out.println("글제목+글내용"); 
+				System.out.println("글제목+글내용"); 
+				System.out.println("글제목+글내용"); 
+				System.out.println("글제목+글내용"); 
+				
+				paramMap.put("boardTitle", searchValue);
+				paramMap.put("boardContent", searchValue);
+				break;
+			}
+		}
+		
+		
 		
 		//map에 날짜 세팅
 		// 현재 날짜

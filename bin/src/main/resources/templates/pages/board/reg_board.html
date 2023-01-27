@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layout/base_layout}">
+
+
+<div layout:fragment="content">
+	<div class="col-10 pt-3 pb-5" style="color: #333; border:3px solid #ebecef; border-radius:3%;">
+		<form th:action="@{/board/regBoard}" method="post" th:object="${boardVO}">
+			<div class="mb-3">
+				<label for="exampleFormControlInput1" class="form-label">글 제목</label> 
+				<input type="text" class="form-control" id="exampleFormControlInput1" th:field="*{boardTitle}" placeholder="제목을 입력해 주세요.">
+			</div>
+			<div class="mb-3">
+				<label for="exampleFormControlTextarea1" class="form-label">글 내용</label>
+				<textarea class="form-control" id="exampleFormControlTextarea1" th:field="*{boardContent}" rows="10" placeholder="인터넷 에티켓을 준수합시다." style="resize: none;">
+				</textarea>
+			</div>
+			<div class="row">
+				<!-- <div class="col-6">
+					<label for="Default select example" class="form-label">카테고리 선택</label>
+					<select class="form-select" aria-label="Default select example" name="boardCateCode">
+						<th:block th:each="cate: ${boardCate}" >
+							<th:block  th:if="${cate.boardCateCode eq 1}" >
+								<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+					  				<option style="background-color: red;"  th:text="${cate.boardCateName}" th:value="${cate.boardCateCode}"></option>
+								</th:block>
+							</th:block>
+							<th:block  th:unless="${cate.boardCateCode eq 1}" >
+					  			<option  th:text="${cate.boardCateName}" th:value="${cate.boardCateCode}"></option>
+							</th:block>		
+						</th:block>
+					</select>
+				</div> -->
+				<!-- 비밀글 여부 -->
+				<div class="mt-3 ml-3">
+					<th:block th:if="${#strings.contains(#authentication.authorities,'ROLE_Y')}">
+						<input class="form-check-input" type="radio" name="isSecret" value="N" id="flexCheckIndeterminate" checked>
+				 	 	<label class="form-check-label" for="flexCheckIndeterminate">비밀글 미설정</label>
+					</th:block>
+					<th:block th:unless="${#strings.contains(#authentication.authorities,'ROLE_Y')}">
+				  		<input class="form-check-input" type="radio" name="isSecret" value="Y" id="flexCheckIndeterminate">
+				 	 	<label class="form-check-label" for="flexCheckIndeterminate">비밀글 설정</label>
+				  		&nbsp;
+				  		&nbsp;
+				  		&nbsp;
+				  		<input class="form-check-input" type="radio" name="isSecret" value="N" id="flexCheckIndeterminate" checked>
+				 	 	<label class="form-check-label" for="flexCheckIndeterminate">비밀글 미설정</label>
+					</th:block>
+				</div>
+			</div>
+			<div class="row" >
+				<div class="col text-right"  >
+					<button type="submit" class="btn btn-secondary" >
+					글 등록
+					</button>
+					<button type="button" class="btn btn-secondary"  th:onclick="|location.href='@{/board/boardList}'|">
+					뒤로가기
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</html>

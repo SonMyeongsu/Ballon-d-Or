@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout ="http://www.ultrap.net.nz/thymeleaf/layout"	
+	layout:decorate="~{layout/base_layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div layout:fragment ="content">
+
+<script type="text/javascript">
+	alert('게시글이 등록되었습니다.')
+	location.href = '/board/boardList';
+</script>
+	
+</div>
+
+
+</body>
+</html>

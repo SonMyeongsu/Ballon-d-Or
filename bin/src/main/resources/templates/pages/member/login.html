@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout ="http://www.ultrap.net.nz/thymeleaf/layout"	
+	layout:decorate="~{layout/base_layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="row justify-content-center">
+         <div class="col-6">
+         <form class="row g-3" th:action="@{/member/login}" method="post" th:object="${memberVO}">	<!-- userDetails에 있는 로그인 실행  -->
+            
+            <div class="col-12">
+               <label for="memberId" class="form-label">ID</label> 
+               <input type="text" class="form-control" name="username">
+               <div class="hasError" th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}"></div>
+            </div>
+            
+            <div class="col-12">
+               <label for="memberPw" class="form-label">PASSWORD</label> 
+               <input type="password" class="form-control" name="password">
+               <div class="hasError" th:if="${#fields.hasErrors('memberPw')}" th:errors="*{memberPw}"></div>
+            </div>
+            
+            <div class="col-12 d-grid gap-2">
+               <button type="submit" class="btn btn-primary">LOGIN</button>
+            </div>
+            </form>
+         </div>
+      </div>
+</div>
+
+</body>
+</html>

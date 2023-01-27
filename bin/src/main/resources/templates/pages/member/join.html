@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout ="http://www.ultrap.net.nz/thymeleaf/layout"	
+	layout:decorate="~{layout/base_layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<div layout:fragment="content">
+		<!-- <form th:action="@{/member/join}" method="post" th:object="${memberVO}">
+		<table>
+		<tr>
+			<td>ID</td>
+			<td><input type="text" th:field="*{memberId}"></td>
+			form태그에 th:object로 넘어오는 커맨드 객체를 지정할 경우
+			해당 form태그 내에서 th:field="*{memberId}"으로 name, id, value 만들어 줌 
+			* memberVO 안에 있는
+		</tr>
+		<tr>
+			<td>PW</td>
+			<td><input type="password" th:field="*{memberPw}"></td>
+		</tr>
+		<tr>
+			<td>이름</td>
+			<td><input type="text" th:field="*{memberName}"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" value="가입하기"> </td>
+		</tr>
+				
+		</table>
+	
+	</form> -->
+
+
+		<!-- 회원가입 모달 -->
+		<!-- 사이즈 줄이려고 행 만들고 안에 열 만들어서 사이즈를 반(6)으로 줄였다-->
+		<div class="row justify-content-center">
+			<!-- 행 안의 모든 내용 화면 중앙으로 오도록 -->
+			<div class="col-6">
+				<form class="row g-3" th:action="@{/member/joinProcess}" method="post" th:object="${memberVO}">
+					<div class="col-12">
+						<label for="memberId" class="form-label">ID</label> 
+						<input type="text" class="form-control" th:field="*{memberId}"> <!-- * object 의미  -->
+						<div class="hasError" th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}"></div>
+						<!--memberVO에서 작성한 message 내용이 뜬다  -->
+					</div>
+					<div class="col-12">
+						<label for="memberPw" class="form-label">PASSWORD</label> 
+						<input type="password" class="form-control" th:field="*{memberPw}">
+						<div class="hasError" th:if="${#fields.hasErrors('memberPw')}" th:errors="*{memberPw}"></div>
+					</div>
+					<div class="col-12">
+						<label for="memberName" class="form-label">NAME</label> 
+						<input type="text" class="form-control" th:field ="*{memberName}">
+						<div class="hasError" th:if="${#fields.hasErrors('memberName')}" th:errors="*{memberName}"></div>
+					</div>
+					
+					<div class="col-4">
+						<label for="" class="form-label">TELL</label> 
+						<select class="form-select" name="memberTells">
+							<option selected value="010">010</option>
+							<option value="011">011</option>
+						</select>
+					</div>
+					<div class="col-4">
+						<label for="" class="form-label">&nbsp;</label> 
+						<input type="text" class="form-control" name="memberTells">
+					</div>
+					<div class="col-4">
+						<label for="" class="form-label">&nbsp;</label> 
+						<input type="text" class="form-control" name="memberTells">
+					</div>
+					<div class="hasError" th:if="${#fields.hasErrors('memberTell')}" th:errors="*{memberTell}"></div>
+					
+					<div class="col-12">
+						<label for="memberEmail" class="form-label">EMAIL</label> 
+						<input type="text" class="form-control" th:field ="*{memberEmail}">
+						<div class="hasError" th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}"></div>
+					</div>
+					
+					<div class="col-12 d-grid gap-2">
+						<button type="submit" class="btn btn-primary">JOIN</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

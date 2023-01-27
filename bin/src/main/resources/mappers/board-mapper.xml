@@ -64,48 +64,22 @@
 				, (SELECT COUNT(BOARD_HATE_NUM)
 				   FROM SOCCER_BOARD_HATE WHERE BOARD_NUM = SOCCER_BOARD.BOARD_NUM) AS HATE_COUNT
 			FROM SOCCER_BOARD 
-			WHERE
-			<trim prefixOverrides="AND"><!--WHERE 1 = 1와같은 정식적이지 않은 방식대신 trim태그 속성을 이용하여 쿼리실행  -->
-				<if test= "memberId != null and !memberId.equals('')">
-					UPPER(MEMBER_ID) LIKE UPPER('%'||#{memberId}||'%') 
-				</if>
-				<if test= "boardTitle != null and !boardTitle.equals('')">
-					<if test= "boardContent == null or boardContent.equals('')">
-						AND UPPER(BOARD_TITLE) LIKE UPPER('%'||#{boardTitle}||'%')
-					</if>
-				</if>
-				<if test= "boardContent != null and !boardContent.equals('')">
-					<if test= "boardTitle == null or boardTitle.equals('')">
-						AND UPPER(BOARD_CONTENT) LIKE UPPER('%'||#{boardContent}||'%')
-					</if>
-				</if>
-				<if test= "boardTitle != null and !boardTitle.equals('')">
-					<if test= "boardContent != null and !boardContent.equals('')">
-						AND (
-							UPPER(BOARD_TITLE) LIKE UPPER('%'||#{boardTitle}||'%') 
-							OR UPPER(BOARD_CONTENT) LIKE UPPER('%'||#{boardContent}||'%')
-						)
-					</if>
-				</if>
-				<!-- <if test= "memberId != null and !memberId.equals('')">
-				AND UPPER(MEMBER_ID) LIKE UPPER('%'||#{memberId}||'%') 
-				</if> -->
-				<!-- <if test= "boardTitle != null and !boardTitle.equals('')">
-				AND UPPER(BOARD_TITLE) LIKE UPPER('%'||#{boardTitle}||'%')
-				</if>
-				<if test= "boardContent != null and !boardContent.equals('')">
-				AND UPPER(BOARD_CONTENT) LIKE UPPER('%'||#{boardContent}||'%')
-				</if> -->
-				<!-- <if test= "boardCateCode != null and !boardCateCode.equals('')">
-				AND BO.BOARD_CATE_CODE = #{boardCateCode}
-				</if> --> 
-				<if test="fromDate != null and !fromDate.equals('')">
-				AND TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') &gt;= #{fromDate}  
-				</if>		
-				<if test="toDate != null and !toDate.equals('')">
-				AND TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') &lt;= #{toDate}
-				</if>
-			</trim>
+			WHERE 1= 1
+			<if test= "memberId != null and !memberId.equals('')">
+			AND UPPER(MEMBER_ID) LIKE UPPER('%'||#{memberId}||'%') 
+			</if>
+			<if test= "boardTitle != null and !boardTitle.equals('')">
+			AND UPPER(BOARD_TITLE) LIKE UPPER('%'||#{boardTitle}||'%')
+			</if>
+			<!-- <if test= "boardCateCode != null and !boardCateCode.equals('')">
+			AND BO.BOARD_CATE_CODE = #{boardCateCode}
+			</if> --> 
+			<if test="fromDate != null and !fromDate.equals('')">
+			AND TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') &gt;= #{fromDate}  
+			</if>		
+			<if test="toDate != null and !toDate.equals('')">
+			AND TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') &lt;= #{toDate}
+			</if>
 		ORDER BY ${orderBy} DESC
 		)
 	)

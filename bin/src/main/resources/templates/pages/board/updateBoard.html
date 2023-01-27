@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultrap.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base_layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div layout:fragment="content" th:object="${update}">
+		<div class="row justify-content-center">
+			<div class="col-6">
+				<form th:action="@{/board/updateBoard}" method="post">
+					<div class="mb-3">
+						<label for="formGroupExampleInput" class="form-label">글번호</label>
+						<input type="text" class="form-control" id="formGroupExampleInput"
+							th:field="*{boardNum}" readonly> 
+						<label for="formGroupExampleInput" class="form-label">제목</label> 
+						<input type="text" class="form-control" id="formGroupExampleInput"
+							th:field="*{boardTitle}" readonly> 
+						<label for="formGroupExampleInput" class="form-label">작성일</label> 
+						<input type="text" class="form-control" id="formGroupExampleInput"
+							th:field="*{boardRegDate}" readonly> 
+						<label for="formGroupExampleInput" class="form-label">작성자</label> 
+						<input type="text" class="form-control" id="formGroupExampleInput"
+							th:field="*{memberId}" readonly>
+					</div>
+
+					<label for="formGroupExampleInput" class="form-label">내용</label>
+					<div class="form-floating">
+						<textarea class="form-control" placeholder="내용을 입력하세요"
+							id="floatingTextarea2" style="height: 300px"
+							th:field="*{boardContent}"></textarea>
+
+					</div>
+
+					<div class="row">
+						<div class="col text-center">
+							<button type="button" class="btn btn-outline-info"
+								th:onclick="|location.href = '@{/board/boardDetail(boardNum=${update.boardNum})}'|">뒤로가기</button>
+							<button type="submit" class="btn btn-outline-info">수정하기</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

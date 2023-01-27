@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- 고정된 화면  -->
+<div th:fragment="topFragment">
+
+	<div class="row">
+	
+		<div class="col text-end" >
+		<!-- 인증된 사용자가 아닐 때 -->
+		<span sec:authorize="isAnonymous()">
+			
+			<a th:href="@{/member/loginPage}"> Login</a>
+			<a th:href="@{/member/joinPage}">Join</a>
+		</span>
+		<!-- 인증된 사용자이면 -->
+		<span sec:authorize="isAuthenticated()">
+			<span sec:authentication="name"></span>님 환영합니다.	
+			<!-- <span sec:authentication="principal.authorities" ></span> -->
+			&nbsp;
+			<a th:href="@{/logout}">LOGOUT</a>
+		</span>
+		
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col text-center">
+			<span class="main" th:onclick="|location.href = '@{/board/boardList}'|">Ballon d'Or</span>
+			
+		</div>
+	</div>
+
+</div>
+
+</html>
