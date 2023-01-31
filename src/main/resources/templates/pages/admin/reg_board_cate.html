@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layout/base_layout}">
+
+<th:block layout:fragment="css">
+	<!-- <link rel="stylesheet" th:href="@{}"> -->
+</th:block>
+
+<div layout:fragment="content">
+	<div class="col-9">
+		<form action="/admin/regBoardCategory" method="post">
+			<div class="row">
+				<input class="form-check-input" type="radio" name="flexRadioDefault" onclick="radio1();">1계층 카테고리
+				<input class="form-check-input" type="radio" name="flexRadioDefault" onclick="radio2();" >2계층 카테고리
+				<input class="form-check-input" type="radio" name="flexRadioDefault" onclick="radio3();" checked>3계층 카테고리
+			</div>
+			<div class="row">
+				<div class="row" id="firstCate">
+					<input class="form-check-input" type="text" style="width: 150px;" name="boardCateName" value="">
+				</div>
+				<div class="row" id="secondCate">
+					<select style="width: 150px;">
+						<option value="">선택해주세요</option>
+						<option th:each=" cate: ${cateList}" 
+						th:text="${cate.boardCateName}"
+						th:value="${cate.boardCateCode}"></option>
+					</select>
+					<input class="form-check-input" type="text" style="width: 150px;" name="boardCateName">
+				</div>
+				<div class="row" id="thirdCate">
+					<select style="width: 150px;">
+						<option value="">선택해주세요</option>
+						<option th:each=" cate: ${cateList}" 
+						th:text="${cate.boardCateName}"
+						th:value="${cate.boardCateCode}"></option>
+					</select>
+					<select style="width: 150px;">
+						<option value="">선택해주세요</option>
+						<option th:each=" cate: ${cateList}" 
+						th:text="${cate.boardCateName}"
+						th:value="${cate.boardCateCode}"></option>
+					</select>
+					<input class="form-check-input" type="text" style="width: 150px;">
+				</div>
+			</div>
+			<div>
+				<button type="submit">버튼이염</button>
+			</div>
+		</form>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/admin/addCategory.js}"></script>
+	
+</div>
+</html>
+
+
+
+
+
+
+
+

@@ -4,6 +4,7 @@
 <!-- 해당 파일에 모든 쿼리문을 작성 -->
 <mapper namespace="boardMapper">
 
+<!-- 게시판 -->
 <resultMap type="kh.study.soccer.board.vo.BoardVO" id="board">
 	<id column="BOARD_NUM" property="boardNum"/>
 	<result column="MEMBER_ID" property="memberId"/>
@@ -12,22 +13,33 @@
 	<result column="IS_SECRET" property="isSecret"/>
 	<result column="BOARD_READ_CNT" property="boardReadCnt"/>
 	<result column="BOARD_REG_DATE" property="boardRegDate"/>
+
+	<!-- <association property="boardCategoryVO" resultMap="adminMapper.boardCate"/> -->	
+	<result column="BOARD_CATE_CODE" property="boardCateCode"/>
 	
+
 	<result column="LIKE_COUNT" property="likeCount"/><!-- 가짜컬럼 -->
 	<result column="HATE_COUNT" property="hateCount"/><!-- 가짜컬럼 -->
 </resultMap>
 
+<!-- 게시글 좋아요 -->
 <resultMap type="kh.study.soccer.board.vo.BoardLikeVO" id="boardLike">
 	<id column="BOARD_LIKE_NUM" 					property="boardLikeNum"/>
 	<result column="BOARD_NUM" 				property="boardNum"/>
 	<result column="MEMBER_ID" 				property="memberId"/>
 </resultMap>
 
+<!-- 게시글 싫어요 -->
 <resultMap type="kh.study.soccer.board.vo.BoardHateVO" id="boardHate">
 	<id column="BOARD_HATE_NUM" 			property="boardHateNum"/>
 	<result column="BOARD_NUM" 				property="boardNum"/>
 	<result column="MEMBER_ID" 				property="memberId"/>
 </resultMap>
+
+
+
+
+
 
 <!--게시글 검색및 목록 조회-->
 <select id="selectBoardList" resultMap="board">

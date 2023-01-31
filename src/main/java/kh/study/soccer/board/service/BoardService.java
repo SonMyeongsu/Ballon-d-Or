@@ -21,7 +21,9 @@ public interface BoardService {
 	
 	//조회수 증가
 	void updateReadCnt(int boardNum);
-
+	
+	//게시판 카테고리 조회
+	
 	//추천 기능
 	//////////////////
 		//좋아요 상태 확인

@@ -36,6 +36,10 @@ public class BoardServiceImpl implements BoardService{
 		
 		return sqlSession.selectList("boardMapper.selectBoardList", map);
 	}
+	
+	//게시판 카테고리 조회
+	
+	
 
 	//상세페이지
 	@Override
