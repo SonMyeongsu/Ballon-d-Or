@@ -13,12 +13,6 @@ public class BoardCategoryVO {
 	private String boardCateCode;
 	private String boardCateName;
 	
-	private String boardSubCateCode;
-	private String boardSubCateName;
-	
-	private String boardDeepSubCateCode;
-	private String boardDeepSubCateName;
-	
 	
 }
 
