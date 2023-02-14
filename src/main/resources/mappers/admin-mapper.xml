@@ -71,10 +71,14 @@
 	<selectKey resultType="String" keyProperty="boardDeepSubCateCode" order="BEFORE">
 	
 	</selectKey>
-
+	
 
 </insert>
 
+<select id="SDFDS" resultMap="boardCate">
+<!--테스트용  -->
+
+</select>
 
 
 
