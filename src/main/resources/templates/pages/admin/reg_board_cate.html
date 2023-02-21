@@ -33,13 +33,15 @@
 				</div>
 				<!-- 3계층 카테고리 생성  -->
 				<div class="row" id="thirdCate">
-					<select style="width: 150px;" name="selectedBoardCateCodeWhenDeepSub">
+					<select style="width: 150px;"
+							id="firstSelectedBox" onchange="aaa()">
 						<option value="">선택해주세요</option>
 						<option th:each=" cate: ${cateList}" 
 						th:text="${cate.boardCateName}"
 						th:value="${cate.boardCateCode}"></option>
 					</select>
-					<select style="width: 150px;" name="selectedBoardSubCateCodeWhenDeepSub">
+					<select style="width: 150px;" name="selectedBoardSubCateCodeWhenDeepSub" 
+							id="secondSelectedBox">
 						<option value="">선택해주세요</option>
 						<option th:each=" sub: ${subList}" 
 						th:text="${sub.boardCateName}"

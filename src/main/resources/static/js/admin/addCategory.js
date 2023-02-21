@@ -50,18 +50,54 @@ for(const radio of document.querySelectorAll(".radioCate") )	{
 	
 }
 
+
+//------------------------------------------------------------
+
+
+
+
+function aaa() {
+	$.ajax({
+		url: '/admin/selectBoardSubCate', //요청경로
+		type: 'post',
+		data:{'boardCateCode': document.querySelector('#firstSelectedBox').value }, //필요한 데이터
+		// html에서 1계층 셀렉트태그 id를 쿼리셀렉터로 찾음
+		
+		success: function(subList) {
+			
+			//셀렉트태그를 qs(쿼리셀렉터)사용해서 불러옴.
+			var subSelect= document.querySelector('#secondSelectedBox');	
+					
+			//셀렉트태그 innerHTML을 비운다.
+			subSelect.innerHTML = '';
+			
+			//일단 셀렉트태그에 '<option value="">선택해주세요</option>'를 추가해준다.
+			subSelect.innerHTML += `<option value="">선택해주세요</option>`;
+			
+			for(const sub of subList ) {
+				//console.log(sub);
+								
+				// 셀렉트태그에 '<option value="${sub.boardCateCode}">${sub.boardCateName}</option>'를 추가해준다.
+				subSelect.innerHTML += `<option value="${sub.boardCateCode}">${sub.boardCateName}</option>`;
+				
+			
+			
+			}
+			
+			
+
+
+		},
+		error: function() {
+			alert('실패');
+		}
+	});
+}
+
+
+  
  
 
 
-
-
-
-
-
-
-
-
-
-
-
+ 
 

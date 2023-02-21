@@ -38,11 +38,11 @@ public class AdminController {
 	//반환값 : List<BoardCategoryVO> (선택한 1계층의 하위 BoardCategoryVO 리스트)
 	@ResponseBody //ajax사용시 써야함.
 	@PostMapping("/selectBoardSubCate")
-	public List<BoardCategoryVO> selectBoardSubCate(String boardCateCode, Model model){
+	public List<BoardCategoryVO> selectBoardSubCate(String boardCateCode){
 		
-		model.addAttribute("subList", adminService.selectBoardSubCate(boardCateCode));
 		
-		return null; // 카테고리 3계층 생성시(1계층 셀박 클릭으로 인한 ajax함수 발동시)
+		
+		return adminService.selectBoardSubCate(boardCateCode); // 카테고리 3계층 생성시(1계층 셀박 클릭으로 인한 ajax함수 발동시)
 	}
 	
 	//게시판 카테고리 등록
@@ -58,6 +58,10 @@ public class AdminController {
 		//2계층값을 들고 왔을때 
 		else if(paramMap.get("boardSubCateName") != null && !paramMap.get("boardSubCateName").equals("")) {
 			adminService.regBoardSubCategory(paramMap);
+		}
+		//3계층값을 들고 왔을때 
+		else if(paramMap.get("boardDeepSubCateName") != null && !paramMap.get("boardDeepSubCateName").equals("")) {
+			adminService.regBoardDeepSubCategory(paramMap);
 		}
 		
 		return "redirect:/admin/regBoardCatePage";

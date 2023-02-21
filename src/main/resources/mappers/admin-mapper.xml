@@ -66,19 +66,28 @@
 		)
 </insert>
 
+
 <!--게시판 3계층 카테고리 생성  -->
 <insert id="insertBoardDeepSubCate">
 	<selectKey resultType="String" keyProperty="boardDeepSubCateCode" order="BEFORE">
-	
+		SELECT #{selectedBoardSubCateCodeWhenDeepSub}||'_'||
+				LPAD(
+						NVL(   MAX( TO_NUMBER(SUBSTR(BOARD_CATE_CODE, 14)) ), 0   )
+						 + 1, 3, 0 )
+		FROM BOARD_DEEP_SUB_CATEGORY
+		WHERE BOARD_CATE_CODE LIKE #{selectedBoardSubCateCodeWhenDeepSub}||'_%'
 	</selectKey>
-	
+		
+		INSERT INTO BOARD_DEEP_SUB_CATEGORY(
+			BOARD_CATE_CODE
+			, BOARD_CATE_NAME
+		) VALUES(
+			#{boardDeepSubCateCode}
+			, #{boardDeepSubCateName}
+		)
 
 </insert>
 
-<select id="SDFDS" resultMap="boardCate">
-<!--테스트용  -->
-
-</select>
 
 
 

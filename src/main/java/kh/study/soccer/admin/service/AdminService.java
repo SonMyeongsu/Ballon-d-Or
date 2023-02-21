@@ -19,4 +19,7 @@ public interface AdminService {
 	//게시판 2계층 카테고리 생성
 	void regBoardSubCategory(Map<String, String> paramMap);
 	
+	//게시판 3계층 카테고리 생성
+	void regBoardDeepSubCategory(Map<String, String> paramMap);
+	
 }

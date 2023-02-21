@@ -40,6 +40,12 @@ public class AdminServiceImpl implements AdminService {
 		sqlSession.insert("adminMapper.insertBoardSubCate", paramMap);
 	}
 
+	//게시판 3계층 카테고리 생성
+	@Override
+	public void regBoardDeepSubCategory(Map<String, String> paramMap) {
+		sqlSession.insert("adminMapper.insertBoardDeepSubCate", paramMap);
+	}
+
 
 	
 }
